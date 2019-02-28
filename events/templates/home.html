@@ -23,7 +23,7 @@
           {% for item in events %}
               <tr>
                 <td>{{item.name}}</td>
-                <td>{{item.number_of_tickets}}</td>
+                <td>{{item.seats_left}}</td>
                 <td><span class="ml-2">{{item.dateandtime}}</span> </td>
                 <td><span class="ml-2">{{item.place}}</span></td>
                 <td><a class="btn btn-outline-primary" href="{{item.get_absolute_url}}">  detail</a></td>
