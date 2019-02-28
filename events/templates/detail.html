@@ -26,7 +26,7 @@
                           <div class="col-6">
                           	<p class="card-text">
                               <small class="text-muted"> <i class="far fa-calendar-alt"></i> <span class="ml-2">{{event.dateandtime}}</span> 
-                              <br> 
+                              <br> <i class="far fa-clock"></i><span class="ml-2">{{event.time}}</span> <br> 
                               <i class="fas fa-map-marker-alt"></i> <span class="ml-2">{{event.place}}</span></small> 
                               <br> 
                               <small class="text-muted" ><a href=""></a> <i class="fas fa-user"></i><span class="ml-2"> Organized by : <a href="{% url 'profile' event.organizer.id %}">{{event.organizer}}</a> </span></small>
@@ -37,7 +37,7 @@
                               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                   <span aria-hidden="true">&times;</span>
                             </div>
-                            <p class="card-text ml-3">Number of Tickets Remaining : <span id="numbr">{{event.seats_left}} </span> </p>
+                            <p class="card-text ml-3">Number of Tickets Remaining : <span id="numbr{{event.id}}">{{event.seats_left}} </span> </p>
                             {% if request.user.is_authenticated %}
                               <div id="bookForm" class="form-inline my-2 mx-2">
                                 <div class="form-group mx-2">
@@ -81,8 +81,6 @@
     </div>
   </div>
   <script type="text/javascript">
-      
-
       function booking(id) {
         let mass = document.getElementById("messages"+id);
         let number_of_boking = document.getElementById("id_number_of_boking");
@@ -97,8 +95,8 @@
                   },
                   success: function(data){
                       console.log(data);
-                      let rem_id = "#numbr";
-                          $(rem_id).text(data.new_num_of_tic);
+                      let rem_id = "#numbr"+id;
+                          $(rem_id).text(data.rem_number_of_tickets);
                           $(mass).addClass(data.tagc);
                           $(mass).append(data.mass);
                           $(mass).removeClass("d-none");

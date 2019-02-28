@@ -87,6 +87,8 @@ class Logout(View):
         return redirect("login")
 
 def event_create(request):
+    if request.user.is_anonymous:
+        return redirect('login')
     form = EventForm(request.POST, request.FILES)
     if form.is_valid():
         event = form.save(commit=False)
@@ -98,6 +100,8 @@ def event_create(request):
 
 
 def event_list(request):
+    if request.user.is_anonymous:
+        return redirect('login')
     formboking = BokingForm()
 
     events = Event.objects.all().filter(dateandtime__gte = datetime.datetime.today())   
@@ -116,6 +120,8 @@ def event_list(request):
 
 
 def event_detail(request, event_id):
+    if request.user.is_anonymous:
+        return redirect('login')
     event = Event.objects.get(id=event_id)
     booked_tickets = Booking.objects.filter(event= event)
     context = {
@@ -149,6 +155,8 @@ def dashboard(request):
     return render(request, 'dashboard.html', context)
 
 def chart_data(request):
+    if request.user.is_anonymous:
+        return redirect('login')
     lables = [['Task', 'Hours per Day'],]
     for event in request.user.organized.all():
         print('--'*30)
@@ -162,6 +170,8 @@ def chart_data(request):
 
 
 def event_update(request, event_id):
+    if request.user.is_anonymous:
+        return redirect('login')
     event = Event.objects.get(id=event_id)
     if not (request.user == event.organizer):
         return redirect('login')
@@ -178,6 +188,8 @@ def event_update(request, event_id):
     return render(request, 'update.html', context)
 
 def event_delete(request, event_id):
+    if request.user.is_anonymous:
+        return redirect('login')
     event_obj = Event.objects.get(id=event_id)
     if not (request.user == event_obj.organizer):
         return redirect('list')
@@ -187,7 +199,7 @@ def event_delete(request, event_id):
 def event_booking(request, event_id, num_b):
     if request.user.is_anonymous:
         return redirect('login')
-
+    user_obj = request.user
     event_obj = Event.objects.get(id=event_id)
     number_of_tickets_b = num_b
     rem_number_of_tickets = event_obj.seats_left()
@@ -199,7 +211,7 @@ def event_booking(request, event_id, num_b):
         subject = 'Thank you for Booking for '+event_obj.name
         message = "Information about "+event_obj.description + "\n Date "+ str(event_obj.dateandtime) + "\nTime "+str(event_obj.time) + "\n And number of booking is "+str(num_b)
         email_from = settings.EMAIL_HOST_USER
-        recipient_list = ['almteref@gmail.com',]
+        recipient_list = [user_obj.email,]
         send_mail( subject, message, email_from, recipient_list )
         rem_number_of_tickets -= num_b
         mass = "You have booked successfully."
@@ -221,6 +233,8 @@ def event_booking(request, event_id, num_b):
 
 
 def previous_event(request):
+    if request.user.is_anonymous:
+        return redirect('login')
     bookings = request.user.bookings.filter(event__dateandtime__lte = datetime.datetime.today())
     context = {
     'bookings':bookings
@@ -229,7 +243,9 @@ def previous_event(request):
 
 
 def my_booking(request):
-    bookings = request.user.bookings.filter(event__dateandtime__gte = datetime.datetime.today()).filter(event__time__lte = datetime.datetime.today().time())
+    if request.user.is_anonymous:
+        return redirect('login')
+    bookings = request.user.bookings.filter(event__dateandtime__gte = datetime.datetime.today())
     context = {
     'bookings':bookings
     }
@@ -238,6 +254,8 @@ def my_booking(request):
 
 # remove and taje away URLS
 def update_profile(request):
+    if request.user.is_anonymous:
+        return redirect('login')
     user_form = UserForm(request.POST, instance=request.user)
     if user_form.is_valid():
         user_form.save()

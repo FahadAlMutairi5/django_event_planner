@@ -18,7 +18,6 @@ EventCreateUpdateSerializer,
 EventDetailSerializer,
 MyBookingsSerializer,
 BookSerializer,
-
 )
 
 

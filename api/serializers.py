@@ -92,4 +92,3 @@ class BookSerializer(serializers.ModelSerializer):
         elif seats_left > event_object.seats_left():
             raise serializers.ValidationError("you exceede the number of seats ")
         return data
-
