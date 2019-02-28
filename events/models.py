@@ -48,9 +48,10 @@ class Booking(models.Model):
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_pro')
     photo = models.ImageField(upload_to='user_logos')
     description = models.TextField()
+    following = models.ManyToManyField(User, related_name='followers', null=True, blank=True)
 
     def __str__(self):
         return self.user.first_name

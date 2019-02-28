@@ -36,12 +36,12 @@ class EventCreateUpdateSerializer(serializers.ModelSerializer):
         fields = [
             'name',
             'dateandtime',
+            'time',
             'description',
-            'organizer',
             'place',
             'number_of_tickets',
-            'poster',]       
-
+            'poster',
+        ]       
 
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
@@ -60,13 +60,11 @@ class EventDetailSerializer(serializers.ModelSerializer):
             'organizer',
             'people_who_booked_my_event',
             'number_of_tickets',
-            
             ]
 
     def get_people_who_booked_my_event(self, obj):
         people_who_booked_my_event = Booking.objects.filter(event=obj).values_list("user__username")
         return people_who_booked_my_event
-        
 
 
 class MyBookingsSerializer(serializers.ModelSerializer):
@@ -94,16 +92,4 @@ class BookSerializer(serializers.ModelSerializer):
         elif seats_left > event_object.seats_left():
             raise serializers.ValidationError("you exceede the number of seats ")
         return data
-
-
-
-
-
-
-
-
-
-
-
-
 

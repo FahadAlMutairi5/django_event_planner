@@ -1,4 +1,5 @@
 from django.urls import path
+from django.conf import settings
 from .views import (
 	 Login,
 	 Logout,
@@ -18,8 +19,11 @@ from .views import (
 	 profile,
 	 create_profile,
 	 booking_delete,
+     followers_following,
+     email,
 	 )
-from api.views import EventListView
+
+
 
 
 urlpatterns = [
@@ -32,6 +36,7 @@ urlpatterns = [
     path('profile/<int:user_id>', profile, name='profile'),
     path('profile/create', create_profile, name='create_profile'),
     path('profile/update', update_profile, name='update-profile'),
+    path('profile/following/<int:prof_id>/', followers_following, name='followers-following'),
     path('previous/event/', previous_event ,name='previous-event'),
     path('upcoming/event/', my_booking, name='my_booking'),
     path('booking/delete/<int:event_id>', booking_delete, name='booking-delete'),
@@ -41,6 +46,6 @@ urlpatterns = [
     path('event/delete/<int:event_id>', event_delete, name='delete'),
     path('event/booking/<int:event_id>/<int:num_b>/', event_booking, name='booking'),
     path('get/data/', chart_data , name='get_data'),
-    path('api/list/', EventListView.as_view(), name='api-list'),
+    path('email', email, name='email')
 ]
 
