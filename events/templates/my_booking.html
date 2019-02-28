@@ -22,10 +22,10 @@
 						    </div>
 						    <div class="row">
 						    	<div class="col-8">
-						    		<p class="card-text"><small class="text-muted"> <i class="far fa-calendar-alt"></i> <span class="ml-2">{{event.event.dateandtime}}</span> <br> <i class="far fa-calendar-alt"></i> <span class="ml-2">{{event.event.time}}</span> <br> <i class="fas fa-map-marker-alt"></i> <span class="ml-2">{{event.event.place}}</span></small> <br> <small class="text-muted" > <i class="fas fa-user"></i><span class="ml-2"> Organized by : {{event.event.organizer}} </span></small></p>
+						    		<p class="card-text"><small class="text-muted"> <i class="far fa-calendar-alt"></i> <span class="ml-2">{{event.event.dateandtime}}</span> <br> <i class="far fa-clock"></i><span class="ml-2">{{event.event.time}}</span> <br> <i class="fas fa-map-marker-alt"></i> <span class="ml-2">{{event.event.place}}</span></small> <br> <small class="text-muted" > <i class="fas fa-user"></i><span class="ml-2"> Organized by : {{event.event.organizer}} </span></small></p>
 						    	</div>
 						    	<div class="col-4">
-						    		<a href="{% url 'booking-delete' event.event.id %}"> <h1><span class="badge badge-dark badge-pill">X</span></h1></a>
+						    		<a href="{% url 'booking-delete' event.event.id %}"> <h1><span class="badge badge-dark badge-pill"><i class="fas fa-trash-alt"></i></span></h1></a>
 						    	</div>
 						    </div>
 						<hr>

@@ -26,12 +26,26 @@
           <br>
           <div class="card">
                   	<div class="card-header">
+                      <div class="row">
+                        <div class="col-10">
                           <h4 class="modal-title" id="myModalLabel">More About {{user.first_name}}</h4>
+                        </div>
+                        {% if request.user != user %}
+                        <div class="col-2">
+                          <button  onclick="addfollowing({{user.id}})" type="button" class="btn btn-primary mr-2">Following
+                          </button>
+                        </div>
+                        {% endif %}
+                      </div>
                       </div>
                       <div class="card-body">
                           <center>
                           <img src="{{Profile.photo.url}}" name="aboutme" width="140" height="140" border="0" class="img-circle"></a>
                          <h3 class="media-heading mt-2">{{user.first_name}} {{user.last_name}}</h3>
+                          <button type="button" class="btn btn-primary mr-2">Followers <span  id="followers{{user.id}}" class="badge badge-light">{{following_user_obj}}
+                            </span>
+                          </button>  <button type="button" class="btn btn-primary">Following 
+                          <span id="following{{user.id}}" class="badge badge-light"> {{followers_user_obj}}   </span></button>
                           </center>
                           <hr>
                           <center>
@@ -77,6 +91,24 @@
 	</div>
 </header>
 
+<script type="text/javascript">
+  function addfollowing(prof_id) {
+        $.ajax(
+            {
+                type:'GET',
+                url: '/profile/following/'+prof_id,
+                error: function(){
+                    console.log('error');
+                },
+                success: function(data){
+                    console.log(data);
+                    let followers = "#followers"+prof_id;
+                        $(followers).text(data.followers_user_obj);
+                },
+            }
+        );
+    };
+</script>
 {% endblock content %}
 
 

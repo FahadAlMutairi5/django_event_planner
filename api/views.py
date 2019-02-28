@@ -16,7 +16,6 @@ EventListSerializer,
 UserCreateSerializer,
 EventCreateUpdateSerializer,
 EventDetailSerializer,
-#OrganizerEventsSerializer,
 )
 
 
@@ -33,10 +32,9 @@ class UserCreateView(CreateAPIView):
 
 class EventCreateView(CreateAPIView):
     serializer_class = EventCreateUpdateSerializer
-    permission_classes = [IsAuthenticated,]
-
+    permission_classes = [IsAdminUser,]
     def perform_create(self, serializer):
-        serializer.save(organizer=self.request.user)
+        serializer.save(organizer = self.request.user)
 
 class EventUpdateView(RetrieveUpdateAPIView):
     queryset = Event.objects.all()

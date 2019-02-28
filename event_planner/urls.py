@@ -39,7 +39,8 @@ urlpatterns = [
     path('api/create/', EventCreateView.as_view(), name='api-create'),
     path('api/update/<int:event_id>/', EventUpdateView.as_view(), name='api-update'),
     path('api/detail/<int:event_id>/', EventDetailView.as_view(), name='api-detail'),
-    path('api/organizer/events/', OrganizerEventsView.as_view(), name='organizer-events')
+    path('api/organizer/events/', OrganizerEventsView.as_view(), name='organizer-events'),
+    
 ]
 
 

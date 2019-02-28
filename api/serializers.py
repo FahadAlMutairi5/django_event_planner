@@ -36,12 +36,12 @@ class EventCreateUpdateSerializer(serializers.ModelSerializer):
         fields = [
             'name',
             'dateandtime',
+            'time',
             'description',
-            'organizer',
             'place',
             'number_of_tickets',
-            'poster',]       
-
+            'poster',
+        ]       
 
 class BookingSerializer(serializers.ModelSerializer):
     class Meta:
@@ -60,24 +60,9 @@ class EventDetailSerializer(serializers.ModelSerializer):
             'organizer',
             'people_who_booked_my_event',
             'number_of_tickets',
-            
             ]
 
     def get_people_who_booked_my_event(self, obj):
         people_who_booked_my_event = Booking.objects.filter(event=obj).values_list("user__username")
         return people_who_booked_my_event
         
-
-
-# class OrganizerEventsSerializer(serializers.ModelSerializer):
-#     organizer_events = serializers.SerializerMethodField()
-#     class Meta:
-#         model = Event
-#         fields =['__all__'] 
-
-#     def get_organizer_events(self, obj):
-#         organizer_events = Event.objects.filter(event=obj)
-#         event_list = EventListSerializer(organizer_events, many=True).data
-#         return event_list
-
-

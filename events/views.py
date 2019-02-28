@@ -15,6 +15,8 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.db.models import Q
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 def home(request):
@@ -194,6 +196,11 @@ def event_booking(request, event_id, num_b):
     if number_of_tickets_b <= rem_number_of_tickets:
         booking = Booking(user=request.user, event=event_obj, number_of_booking=num_b)
         booking.save()
+        subject = 'Thank you for Booking for '+event_obj.name
+        message = "Information about "+event_obj.description + "\n Date "+ str(event_obj.dateandtime) + "\nTime "+str(event_obj.time) + "\n And number of booking is "+str(num_b)
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = ['almteref@gmail.com',]
+        send_mail( subject, message, email_from, recipient_list )
         rem_number_of_tickets -= num_b
         mass = "You have booked successfully."
         tagc = "alert alert-success alert-dismissible fade show"
@@ -222,7 +229,7 @@ def previous_event(request):
 
 
 def my_booking(request):
-    bookings = request.user.bookings.filter(event__dateandtime__gte = datetime.datetime.today())
+    bookings = request.user.bookings.filter(event__dateandtime__gte = datetime.datetime.today()).filter(event__time__lte = datetime.datetime.today().time())
     context = {
     'bookings':bookings
     }
@@ -264,6 +271,8 @@ def profile(request, user_id):
     profile_obj = Profile.objects.get(user=user_obj)
     profile_update_form = ProfileForm(instance=profile_obj)
     events = Event.objects.filter(organizer= user_obj)
+    followers_user_obj = user_obj.followers.count()
+    following_user_obj = profile_obj.following.count()
     if request.method == "POST": 
         user_form = UserForm(request.POST, instance=user_obj)
         profile_update_form = ProfileForm(request.POST, request.FILES, instance=profile_obj)
@@ -277,6 +286,8 @@ def profile(request, user_id):
         "events": events,
         "Profile": profile_obj,
         "profile_update_form": profile_update_form,
+        "followers_user_obj": followers_user_obj,
+        "following_user_obj": following_user_obj,
     }
     return render(request, 'profile.html', context)
 
@@ -295,11 +306,43 @@ def booking_delete(request, event_id):
     # print(today)
     # print(month)
     # print(year)
-    print(event_obj.time.hour - now.hour)
-    #if  (now.hour+3) > event_time_hour: 
-        #my_booking.delete()
-    
-        
-    return redirect('my_booking')
+    limet = event_obj.time.hour - now.hour
+    print()
+    print(event_obj.time.hour)
+    print(now.hour)
+    print(limet)
+    if datetime.datetime.now().date() < event_obj.dateandtime:
+        my_booking.delete()
+        return redirect('my_booking')
+    elif datetime.datetime.now().time().hour+3 > event_time_hour and now.year == year and now.month == month and now.today == today: 
+        my_booking.delete()
+    else:
+        return redirect('login')
+
+def followers_following(request, prof_id):
+    if request.user.is_anonymous:
+        return redirect('login')
+    user_obj_2 = User.objects.get(id=prof_id)
+    user_obj_2_obj = Profile.objects.get(user=user_obj_2)
+    user_obj_1 = User.objects.get(id=request.user.id)
+    print(user_obj_1.first_name)
+    user_obj_1.followers.add(user_obj_2_obj)
+    user_obj_1.save()
+    followers_user_obj = user_obj_2_obj.following.count()
+    response = {
+        "followers_user_obj": followers_user_obj,
+    }
+    return JsonResponse(response, safe=False)
+
+def email(request):
+    subject = 'Thank you for registering to our site'
+    message = ' it  means a world to us '
+    email_from = settings.EMAIL_HOST_USER
+    recipient_list = ['almtereef@gmail.com',]
+    send_mail( subject, message, email_from, recipient_list )
+    return redirect('login')
+
+
+
 
 
