@@ -65,4 +65,31 @@ class EventDetailSerializer(serializers.ModelSerializer):
     def get_people_who_booked_my_event(self, obj):
         people_who_booked_my_event = Booking.objects.filter(event=obj).values_list("user__username")
         return people_who_booked_my_event
-        
+
+
+class MyBookingsSerializer(serializers.ModelSerializer):
+
+    event = EventListSerializer()
+    class Meta:
+        model = Booking
+        fields = ['event', 'number_of_booking']
+
+
+class BookSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Booking
+        fields = [
+            'event',
+            'number_of_booking',
+        ]
+    
+    def validate(self, data):
+        event_object = data.get('event')
+        seats_left = int(data.get('number_of_booking'))
+        if event_object.seats_left() == 0:
+            raise serializers.ValidationError("no seats avilable at theis time ") 
+        elif seats_left > event_object.seats_left():
+            raise serializers.ValidationError("you exceede the number of seats ")
+        return data
+
