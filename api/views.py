@@ -6,7 +6,7 @@ RetrieveUpdateAPIView,
 RetrieveAPIView,
 )
 from rest_framework.views import APIView
-from events.models import Event
+from events.models import Event, Booking
 import datetime
 from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
@@ -16,7 +16,8 @@ EventListSerializer,
 UserCreateSerializer,
 EventCreateUpdateSerializer,
 EventDetailSerializer,
-#OrganizerEventsSerializer,
+MyBookingsSerializer,
+BookSerializer,
 )
 
 
@@ -59,4 +60,22 @@ class OrganizerEventsView(ListAPIView):
 
     def get_queryset(self):
         return Event.objects.filter(organizer= self.request.user)
+
+
+class MyBookingsView(ListAPIView):
+    serializer_class = MyBookingsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):        
+        # bookings = Booking.objects.filter(user=self.request.user)
+        bookings = self.request.user.bookings.all()
+        return bookings
+
+
+class BookView(CreateAPIView):
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticated,]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user,)
 

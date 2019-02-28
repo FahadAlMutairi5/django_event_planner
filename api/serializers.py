@@ -69,15 +69,41 @@ class EventDetailSerializer(serializers.ModelSerializer):
         
 
 
-# class OrganizerEventsSerializer(serializers.ModelSerializer):
-#     organizer_events = serializers.SerializerMethodField()
-#     class Meta:
-#         model = Event
-#         fields =['__all__'] 
+class MyBookingsSerializer(serializers.ModelSerializer):
 
-#     def get_organizer_events(self, obj):
-#         organizer_events = Event.objects.filter(event=obj)
-#         event_list = EventListSerializer(organizer_events, many=True).data
-#         return event_list
+    event = EventListSerializer()
+    class Meta:
+        model = Booking
+        fields = ['event', 'number_of_booking']
+
+
+class BookSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Booking
+        fields = [
+            'event',
+            'number_of_booking',
+        ]
+    
+    def validate(self, data):
+        event_object = data.get('event')
+        seats_left = int(data.get('number_of_booking'))
+        if event_object.seats_left() == 0:
+            raise serializers.ValidationError("no seats avilable at theis time ") 
+        elif seats_left > event_object.seats_left():
+            raise serializers.ValidationError("you exceede the number of seats ")
+        return data
+
+
+
+
+
+
+
+
+
+
+
 
 
